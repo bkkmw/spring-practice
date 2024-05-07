@@ -33,7 +33,7 @@ public class ProductController {
             // TODO: Extract method
             if(ValidationUtil.isEmptyString(registerReq.getName()))
                 throw new ValidatorException("name", "name cannot be empty");
-            if (ValidationUtil.isAlpha(registerReq.getName()))
+            if(!ValidationUtil.isAlpha(registerReq.getName()))
                 throw new ValidatorException("name", "name must be in english. Was : " + registerReq.getName());
             if(ValidationUtil.isValidNumber(registerReq.getCategoryId()))
                 throw new ValidatorException("categoryId", "Invalid category number. Was : " + registerReq.getCategoryId());
@@ -41,7 +41,7 @@ public class ProductController {
                 throw new ValidatorException("price", "Invalid price. Was : " + registerReq.getPrice());
             if(ValidationUtil.isEmptyString(registerReq.getDesc()))
                 throw new ValidatorException("desc", "desc cannot be empty");
-            if(ValidationUtil.isStringInLength(registerReq.getDesc(), 20))
+            if(!ValidationUtil.isStringInLength(registerReq.getDesc(), 20))
                 throw new ValidatorException("desc", "desc cannot be longer than 20. Length was : " + registerReq.getDesc().length());
 
 

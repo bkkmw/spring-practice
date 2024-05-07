@@ -19,7 +19,7 @@ public class ValidationUtil {
      * @return true / false
      */
     public static boolean isAlpha(String str) {
-        return !Pattern.matches("[a-zA-Z]*$", str);
+        return Pattern.matches("[a-zA-Z]*$", str);
     }
 
     /**
