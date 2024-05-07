@@ -10,7 +10,7 @@ public class ValidationUtil {
      * @return true(>=0), false(negative)
      */
     public static boolean isValidNumber(int number) {
-        return number <= 0;
+        return number > 0;
     }
 
     /**
