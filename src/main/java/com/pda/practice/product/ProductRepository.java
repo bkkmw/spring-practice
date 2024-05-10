@@ -83,4 +83,22 @@ public class ProductRepository {
 
         return results.isEmpty() ? null : results;
     }
+
+    public boolean updateOneById(int productId, Product.ModifyReq modifyReq) throws Exception {
+        Product product = productTable.get(productId);
+
+        if(product == null)
+            throw new NoSuchElementException();
+
+        product.update(modifyReq);
+
+        return productTable.put(product.getId(), product) == null;
+    }
+
+    public boolean deleteOneById(int productId) throws Exception {
+        if(productTable.remove(productId) == null)
+            throw new NoSuchElementException();
+
+        return true;
+    }
 }

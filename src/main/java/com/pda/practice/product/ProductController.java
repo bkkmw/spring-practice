@@ -118,4 +118,60 @@ public class ProductController {
 
         return new ResponseEntity<>(result, status);
     }
+
+    @PutMapping("/{productId}")
+    public ResponseEntity<Map<String, Object>> modifyProduct(@PathVariable int productId, @RequestBody Product.ModifyReq modifyReq) {
+        HttpStatus status;
+        Map<String, Object> result = new HashMap<>();
+        logger.info("Received productId : {}", productId);
+        try {
+            productService.modifyProduct(productId, modifyReq);
+            status = HttpStatus.OK;
+        } catch (NoSuchElementException e) {
+            status = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            result.put("message", e.getMessage());
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable int productId) {
+        HttpStatus status;
+        Map<String, Object> result = new HashMap<>();
+        logger.info("Received productId : {}", productId);
+
+        try {
+            productService.deleteProduct(productId);
+            status = HttpStatus.OK;
+        } catch (NoSuchElementException e) {
+            status = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            result.put("message", e.getMessage());
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
+
+    @PostMapping("/delete-list")
+    public ResponseEntity<Map<String, Object>> deleteProducts(@RequestBody Map<String, List<Integer>> requestBody) {
+        HttpStatus status;
+        Map<String, Object> result = new HashMap<>();
+
+        logger.info("Received {} items to delete", requestBody.get("productIds").size());
+        try {
+            int res = productService.deleteProducts(requestBody.get("productIds"));
+
+            status = HttpStatus.OK;
+            result.put("deletedCount",res);
+        } catch (Exception e) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            result.put("message", e.getMessage());
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
 }
