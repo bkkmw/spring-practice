@@ -2,6 +2,10 @@ package com.pda.practice.product;
 
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 @Builder
 @Getter
 @AllArgsConstructor
@@ -23,6 +27,7 @@ public class Product {
         private String summary;
         private int price;
         private int categoryId;
+
     }
 
     @NoArgsConstructor
