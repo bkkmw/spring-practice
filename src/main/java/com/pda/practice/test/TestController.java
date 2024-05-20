@@ -1,5 +1,6 @@
 package com.pda.practice.test;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("/test")
 public class TestController {
+
+    private final TestService testService;
 
     @PostMapping("/lower-camel")
     public ResponseEntity<String> lowerCamelTest(@RequestBody TestDto.LowerCamelCase reqBody) {
@@ -54,5 +58,10 @@ public class TestController {
     public ResponseEntity<String> lowerDot(@RequestBody TestDto.LowerDotCase reqBody) {
         log.info("Req body : {}", reqBody.getTestValue());
         return new ResponseEntity<>(reqBody.getTestValue(), HttpStatus.OK);
+    }
+
+    @GetMapping("/datasource")
+    public ResponseEntity<String> getDatasource() {
+        return new ResponseEntity<>(testService.getDataSource(), HttpStatus.OK);
     }
 }
