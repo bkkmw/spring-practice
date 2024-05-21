@@ -1,11 +1,15 @@
 package com.pda.practice.user;
 
 
+import com.pda.practice.entity.User;
 import com.pda.practice.exception.DuplicatedKeyException;
+import com.pda.practice.exception.InvalidLoginReqException;
 import com.pda.practice.utils.ApiUtils;
+import jakarta.persistence.NoResultException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -30,8 +34,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Map<String, Object>> signup(@Valid @RequestBody User.SignupReqDto signupReqDto, Errors errors) {
-//    public ResponseEntity<Map<String, Object>> signup(@Valid @RequestBody User.SignupReqDto signupReqDto) {
+    public ResponseEntity<Map<String, Object>> signup(@Valid @RequestBody UserDto.SignupReqDto signupReqDto, Errors errors) {
+//    public ResponseEntity<Map<String, Object>> signup(@Valid @RequestBody UserDto.SignupReqDto signupReqDto) {
         HttpStatus status;
         Map<String, Object> result = new HashMap<>();
         log.warn("error : {}", errors.toString());
@@ -49,18 +53,19 @@ public class UserController {
             status = HttpStatus.CREATED;
             result.put("userId", user.getUserId());
 
-        } catch (DuplicatedKeyException e) {
+        } catch (DuplicatedKeyException | DataIntegrityViolationException e) {
             status = HttpStatus.CONFLICT;
         } catch (Exception e) {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             result.put("message", e.getMessage());
+            log.info("Unintended Exception : {}", e.getClass());
         }
 
         return new ResponseEntity<>(result, status);
     }
 
     @PostMapping("/join")
-    public ApiUtils.ApiResult<Object> joinByApiResult(@RequestBody User.SignupReqDto signupReqDto) {
+    public ApiUtils.ApiResult<Object> joinByApiResult(@RequestBody UserDto.SignupReqDto signupReqDto) {
 
         try {
             User user = userService.signup(signupReqDto);
@@ -94,22 +99,27 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody User.LoginReqDto loginReqDto) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody UserDto.LoginReqDto loginReqDto) {
         HttpStatus status;
         Map<String, Object> result = new HashMap<>();
 
         log.info("Received login request : {}", loginReqDto.toString());
         try {
-//            User user = userService.login(loginReq);
+            UserDto.LoginRespDto user = userService.login(loginReqDto);
 
             status = HttpStatus.OK;
-//            result.put("user", user);
+            result.put("userInfo", user);
+        } catch (InvalidLoginReqException | NoResultException e) {
+            status = HttpStatus.UNAUTHORIZED;
+            result.put("message", "Incorrect ID or password");
         } catch (Exception e) {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
+            log.info("Unintended Exception : {}", e.getClass());
             result.put("message", e.getMessage());
         }
 
         return new ResponseEntity<>(result, status);
+
     }
 
 }

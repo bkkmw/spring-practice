@@ -5,17 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
-@AllArgsConstructor
-@Getter
-@Builder
-public class User {
-
-    private int id;
-    private String userId;
-    private String password;
-    private String name;
-    private String email;
-    private String contact;
+public class UserDto {
 
     @NoArgsConstructor
     @Getter
@@ -42,5 +32,15 @@ public class User {
     public static class LoginReqDto {
         private String userId;
         private String password;
+    }
+
+    @Builder
+    @Getter
+    public static class LoginRespDto {
+        private int id;
+        private String name;
+        private String email;
+        private String contact;
+        private String accessToken;
     }
 }
