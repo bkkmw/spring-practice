@@ -18,7 +18,7 @@ public class UserService {
     private final UserJpaRepository userRepository;
 
     @Transactional
-    public User signup(UserDto.SignupReqDto signupReqDto) throws Exception {
+    public User signup(UserDto.SignupReqDto signupReqDto) {
 //        userRepository.create(signupReqDto);
 
         userRepository.save(User.builder()
@@ -37,7 +37,7 @@ public class UserService {
         return user;
     }
 
-    public int checkId(String userId) throws Exception {
+    public int checkId(String userId) {
         if(userRepository.findByUserId(userId).isEmpty()) {
             log.info("user does not exists");
             return 1;
@@ -48,11 +48,12 @@ public class UserService {
         }
     }
 
-    public UserDto.LoginRespDto login(UserDto.LoginReqDto loginReqDto) throws Exception {
+    public UserDto.LoginRespDto login(UserDto.LoginReqDto loginReqDto) {
 
-        User user = userRepository.findByUserId(loginReqDto.getUserId()).get();
+        User user = userRepository.findByUserId(loginReqDto.getUserId())
+                        .orElseThrow(InvalidLoginReqException::new);
 
-        log.info("???? : {}", user);
+        log.info("User found : {}", user);
 
         if(user.getPassword() == null || !user.getPassword().equals(loginReqDto.getPassword()))
             throw new InvalidLoginReqException();

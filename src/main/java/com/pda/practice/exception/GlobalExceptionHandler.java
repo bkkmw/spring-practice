@@ -2,6 +2,7 @@ package com.pda.practice.exception;
 
 import com.pda.practice.utils.ApiUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,4 +26,24 @@ public class GlobalExceptionHandler {
         message.put("message", e.getFieldErrors());
         return ApiUtils.error(message, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = {DuplicatedKeyException.class, DataIntegrityViolationException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiUtils.ApiResult<Object> handleDuplicatedKey(Exception e) {
+        String message = e.getMessage();
+        log.info("Duplicated DB column");
+
+        return ApiUtils.error(message, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiUtils.ApiResult<Object> handleUnintendedException(Exception e) {
+        String message = e.getMessage();
+
+        log.warn("Unintended Error : {}", (Object) e.getStackTrace());
+
+        return ApiUtils.error(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

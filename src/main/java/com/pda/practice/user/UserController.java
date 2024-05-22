@@ -30,88 +30,49 @@ public class UserController {
 
     @PostMapping("/signup")
 //    public ResponseEntity<Map<String, Object>> signup(@Valid @RequestBody UserDto.SignupReqDto signupReqDto, Errors errors) {
-    public ResponseEntity<Map<String, Object>> signup(@Valid @RequestBody UserDto.SignupReqDto signupReqDto) {
-        HttpStatus status;
+    public ApiUtils.ApiResult<Object> signup(@Valid @RequestBody UserDto.SignupReqDto signupReqDto) {
         Map<String, Object> result = new HashMap<>();
 
         log.info("Received signup request : {}", signupReqDto.toString());
-        try {
-            if(! Pattern.matches("^(.+)@(\\S+)$", signupReqDto.getEmail())) {
-                log.info("invalid email : {}", signupReqDto.getEmail());
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            User user = userService.signup(signupReqDto);
-            status = HttpStatus.CREATED;
-            log.info("created user PK : {}", user.getId());
-            result.put("userId", user.getUserId());
 
-        } catch (DuplicatedKeyException | DataIntegrityViolationException e) {
-            status = HttpStatus.CONFLICT;
-        } catch (Exception e) {
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-            result.put("message", e.getMessage());
-            log.info("Unintended Exception : {}", e.getClass());
-        }
+        User user = userService.signup(signupReqDto);
+        log.info("created user PK : {}", user.getId());
+        result.put("userId", user.getUserId());
 
-        return new ResponseEntity<>(result, status);
-    }
-
-    @PostMapping("/join")
-    public ApiUtils.ApiResult<Object> joinByApiResult(@RequestBody UserDto.SignupReqDto signupReqDto) {
-
-        try {
-            User user = userService.signup(signupReqDto);
-            return ApiUtils.success(user.getUserId());
-        } catch (DuplicatedKeyException e) {
-            return ApiUtils.error("user already exists", HttpStatus.CONFLICT);
-        } catch (Exception e) {
-            return ApiUtils.error("unintended server error : "+e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return ApiUtils.success(result);
     }
 
     @GetMapping("/checkId/{userId}")
-    public ResponseEntity<Map<String, Object>> checkId(@PathVariable String userId) {
-        HttpStatus status;
+    public ApiUtils.ApiResult<Object> checkId(@PathVariable String userId) {
         Map<String, Object> result = new HashMap<>();
 
         log.info("Received user id : {}", userId);
-        try {
-            userService.checkId(userId);
-            log.info("user id does not exists");
-            status = HttpStatus.OK;
-        } catch (DuplicatedKeyException e) {
-            log.info("user already exists");
-            status = HttpStatus.CONFLICT;
-        } catch (Exception e) {
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-            result.put("message", e.getMessage());
-        }
 
-        return new ResponseEntity<>(result, status);
+        userService.checkId(userId);
+        log.info("user id does not exists");
+        result.put("message", "Given user Id is Available");
+
+        return ApiUtils.success(result);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody UserDto.LoginReqDto loginReqDto) {
-        HttpStatus status;
+    public ApiUtils.ApiResult<Object> login(@RequestBody UserDto.LoginReqDto loginReqDto) {
         Map<String, Object> result = new HashMap<>();
 
         log.info("Received login request : {}", loginReqDto.toString());
-        try {
-            UserDto.LoginRespDto user = userService.login(loginReqDto);
 
-            status = HttpStatus.OK;
-            result.put("userInfo", user);
-        } catch (InvalidLoginReqException | NoResultException e) {
-            status = HttpStatus.UNAUTHORIZED;
-            result.put("message", "Incorrect ID or password");
-        } catch (Exception e) {
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-            log.info("Unintended Exception : {}", e.getClass());
-            result.put("message", e.getMessage());
-        }
+        UserDto.LoginRespDto user = userService.login(loginReqDto);
+        result.put("userInfo", user);
 
-        return new ResponseEntity<>(result, status);
+        return ApiUtils.success(result);
 
+    }
+
+    @ExceptionHandler(value = InvalidLoginReqException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiUtils.ApiResult<Object> handleInvalidLoginReq(InvalidLoginReqException e) {
+        log.info("Invalid login request");
+        return ApiUtils.error(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
 }

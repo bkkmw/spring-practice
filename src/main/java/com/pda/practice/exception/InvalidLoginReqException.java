@@ -1,6 +1,6 @@
 package com.pda.practice.exception;
 
-public class InvalidLoginReqException extends Exception {
+public class InvalidLoginReqException extends RuntimeException {
 
     private String message;
 

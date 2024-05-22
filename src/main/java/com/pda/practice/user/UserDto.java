@@ -1,6 +1,7 @@
 package com.pda.practice.user;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -13,7 +14,7 @@ public class UserDto {
     @ToString
     public static class SignupReqDto {
         private String userId;
-        @NotEmpty(message = "Password cannot be empty string")
+        @NotBlank(message = "Password cannot be empty string")
         @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()._-])[a-zA-Z0-9!@#$%^&*()._-]{8,20}$", message = "Invalid password")
         private String password;
         @NotEmpty(message = "Name cannot be empty string")
