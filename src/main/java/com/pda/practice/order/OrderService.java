@@ -24,7 +24,7 @@ public class OrderService {
         Order order = new Order(
                 0,
                 productRepository.findById(registerReq.getProductId()),
-                userRepository.findById(registerReq.getUserId()),
+                userRepository.findByUserId(registerReq.getUserId()),
                 registerReq.getQuantity()
                 );
         return orderRepository.create(order);
