@@ -28,11 +28,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @ExceptionHandler
-    public ApiUtils.ApiResult<Object> exceptionHandler(MethodArgumentNotValidException e) {
-        return ApiUtils.success("from controller");
-    }
-
     @PostMapping("/signup")
 //    public ResponseEntity<Map<String, Object>> signup(@Valid @RequestBody UserDto.SignupReqDto signupReqDto, Errors errors) {
     public ResponseEntity<Map<String, Object>> signup(@Valid @RequestBody UserDto.SignupReqDto signupReqDto) {

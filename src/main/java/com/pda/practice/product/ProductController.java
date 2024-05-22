@@ -14,10 +14,10 @@ import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/products")
 public class ProductController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ProductService productService;
 
     @PostMapping(value = "")
@@ -27,7 +27,7 @@ public class ProductController {
         HttpStatus status;
         Map<String, Object> result = new HashMap<>();
 
-        logger.debug("request received with name : {}", registerReq.getSummary());
+        log.debug("request received with name : {}", registerReq.getSummary());
         try {
             // validate request body
             // TODO: Extract method
@@ -65,7 +65,7 @@ public class ProductController {
         HttpStatus status;
         Map<String, Object> result = new HashMap<>();
 
-        logger.info("Received path variable : {} ({})", productId, productId);
+        log.info("Received path variable : {} ({})", productId, productId);
         try {
             if (!ValidationUtil.isValidNumber(productId)) {
                 throw new ValidatorException("productId", "Invalid productId. Was : " + productId);
@@ -97,7 +97,7 @@ public class ProductController {
         HttpStatus status;
         Map<String, Object> result = new HashMap<String, Object>();
 
-        logger.info("Received query parameter : category {}, pageNo {}, size {}", categoryId, pageNo, size);
+        log.info("Received query parameter : category {}, pageNo {}, size {}", categoryId, pageNo, size);
         try {
             List<Product> products = productService.getProducts(categoryId, pageNo, size);
 
@@ -123,7 +123,7 @@ public class ProductController {
     public ResponseEntity<Map<String, Object>> modifyProduct(@PathVariable int productId, @RequestBody Product.ModifyReq modifyReq) {
         HttpStatus status;
         Map<String, Object> result = new HashMap<>();
-        logger.info("Received productId : {}", productId);
+        log.info("Received productId : {}", productId);
         try {
             productService.modifyProduct(productId, modifyReq);
             status = HttpStatus.OK;
@@ -141,7 +141,7 @@ public class ProductController {
     public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable int productId) {
         HttpStatus status;
         Map<String, Object> result = new HashMap<>();
-        logger.info("Received productId : {}", productId);
+        log.info("Received productId : {}", productId);
 
         try {
             productService.deleteProduct(productId);
@@ -161,7 +161,7 @@ public class ProductController {
         HttpStatus status;
         Map<String, Object> result = new HashMap<>();
 
-        logger.info("Received {} items to delete", requestBody.get("productIds").size());
+        log.info("Received {} items to delete", requestBody.get("productIds").size());
         try {
             int res = productService.deleteProducts(requestBody.get("productIds"));
 

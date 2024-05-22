@@ -1,6 +1,7 @@
 package com.pda.practice.product;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -9,8 +10,8 @@ import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class ProductRepository {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Map<Integer, Product> productTable = new HashMap<>();
     private int increment = 1;
 
@@ -27,7 +28,7 @@ public class ProductRepository {
                         .price(registerReq.getPrice())
                                 .build();
 
-        logger.info("created id : {}", product.getId());
+        log.info("created id : {}", product.getId());
 
         productTable.put(product.getId(), product);
 
