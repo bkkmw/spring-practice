@@ -34,15 +34,11 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Map<String, Object>> signup(@Valid @RequestBody UserDto.SignupReqDto signupReqDto, Errors errors) {
-//    public ResponseEntity<Map<String, Object>> signup(@Valid @RequestBody UserDto.SignupReqDto signupReqDto) {
+//    public ResponseEntity<Map<String, Object>> signup(@Valid @RequestBody UserDto.SignupReqDto signupReqDto, Errors errors) {
+    public ResponseEntity<Map<String, Object>> signup(@Valid @RequestBody UserDto.SignupReqDto signupReqDto) {
         HttpStatus status;
         Map<String, Object> result = new HashMap<>();
-        log.warn("error : {}", errors.toString());
-        if(errors.hasErrors()) {
-            result.put("errors", errors.getAllErrors());
-            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-        }
+
         log.info("Received signup request : {}", signupReqDto.toString());
         try {
             if(! Pattern.matches("^(.+)@(\\S+)$", signupReqDto.getEmail())) {
@@ -51,6 +47,7 @@ public class UserController {
             }
             User user = userService.signup(signupReqDto);
             status = HttpStatus.CREATED;
+            log.info("created user PK : {}", user.getId());
             result.put("userId", user.getUserId());
 
         } catch (DuplicatedKeyException | DataIntegrityViolationException e) {

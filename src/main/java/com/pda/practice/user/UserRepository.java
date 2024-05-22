@@ -20,8 +20,8 @@ public class UserRepository {
     DataSource dataSource;
 
     @Autowired
-//    EntityManager entityManager;
-    EntityManagerFactory entityManagerFactory;
+    EntityManager entityManager;
+//    EntityManagerFactory entityManagerFactory;
 
     private Map<String, UserDto> userTable;
     private int increment;
@@ -81,22 +81,23 @@ public class UserRepository {
                 .build();
 
 
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        EntityTransaction txm = entityManager.getTransaction();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
+//        EntityTransaction txm = entityManager.getTransaction();
 
-        txm.begin();
+//        txm.begin();
         entityManager.persist(user);
 
 //        System.out.println(user.getId());
 
-        txm.commit();
+//        txm.commit();
 //        System.out.println(user.getId());
 //        System.out.println(entityManager.find(User.class, 1).getId());
 
+        log.info("created entity with id : {}", user.getId());
     }
 
     public User findByUserId(String userId) throws Exception {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         log.info("Searching for userId : {}", userId);
 

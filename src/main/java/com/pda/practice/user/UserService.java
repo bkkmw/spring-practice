@@ -4,6 +4,7 @@ import com.pda.practice.entity.User;
 import com.pda.practice.exception.DuplicatedKeyException;
 import com.pda.practice.exception.InvalidLoginReqException;
 import com.pda.practice.utils.RandAuthenticationUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,16 +14,31 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService {
 
-    private final UserRepository userRepository;
+//    private final UserRepository userRepository;
+    private final UserJpaRepository userRepository;
 
+    @Transactional
     public User signup(UserDto.SignupReqDto signupReqDto) throws Exception {
-        userRepository.create(signupReqDto);
+//        userRepository.create(signupReqDto);
 
-        return userRepository.findByUserId(signupReqDto.getUserId());
+        userRepository.save(User.builder()
+                .userId(signupReqDto.getUserId())
+                .password(signupReqDto.getPassword())
+                .email(signupReqDto.getEmail())
+                .name(signupReqDto.getName())
+                .contact(signupReqDto.getContact())
+                .build());
+
+        log.info("created user");
+
+        User user = userRepository.findByUserId(signupReqDto.getUserId()).get();
+        log.info("Retrieve user : {}", user.getId());
+
+        return user;
     }
 
     public int checkId(String userId) throws Exception {
-        if(userRepository.findByUserId(userId) == null) {
+        if(userRepository.findByUserId(userId).isEmpty()) {
             log.info("user does not exists");
             return 1;
         }
@@ -34,7 +50,7 @@ public class UserService {
 
     public UserDto.LoginRespDto login(UserDto.LoginReqDto loginReqDto) throws Exception {
 
-        User user = userRepository.findByUserId(loginReqDto.getUserId());
+        User user = userRepository.findByUserId(loginReqDto.getUserId()).get();
 
         log.info("???? : {}", user);
 
