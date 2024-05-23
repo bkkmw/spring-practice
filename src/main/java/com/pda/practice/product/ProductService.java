@@ -25,8 +25,11 @@ public class ProductService {
                 .summary(registerReq.getSummary())
                 .price(registerReq.getPrice())
                 .build();
-        return productRepository.save(product).getId();
 
+        productRepository.save(product);
+
+        log.debug("Registered product id : {}", product.getId());
+        return product.getId();
     }
 
     public ProductDto.Info getProductInfo(int productId)  {
