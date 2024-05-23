@@ -5,10 +5,12 @@ import org.springframework.http.HttpStatus;
 
 public class ApiUtils<T> {
 
+    // TODO HttpStatus differs even on success. 200, 201, etc
     public static <T> ApiResult<T> success(T response) {
         return new ApiResult<T>(response);
     }
 
+    // TODO Duplicated info, HttpStatus code and status httpStatus field
     public static <T> ApiResult<T> error(T message, HttpStatus status) {
         return new ApiResult<T>(new ApiError<T>(message, status));
     }

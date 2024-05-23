@@ -19,7 +19,7 @@ public class ProductController {
 
     @PostMapping(value = "")
     public ApiUtils.ApiResult<Object> register(
-            @RequestBody ProductDto.RegisterReq registerReq)
+            @RequestBody ProductDto.RegisterReq registerReq) // TODO Validate
     {
         Map<String, Object> result = new HashMap<>();
 
@@ -28,6 +28,7 @@ public class ProductController {
         result.put("message", "Created");
         result.put("id", id);
 
+        // TODO 200 -> 201
         return ApiUtils.success(result);
     }
 
@@ -49,6 +50,7 @@ public class ProductController {
             @RequestParam(required = false, defaultValue = "1") int pageNo,
             @RequestParam(required = false, defaultValue = "4") int size
     ) {
+        // TODO Paging
         Map<String, Object> result = new HashMap<String, Object>();
 
         log.info("Received query parameter : category {}, pageNo {}, size {}", categoryId, pageNo, size);
@@ -59,7 +61,7 @@ public class ProductController {
             result.put("products", products);
 
             return ApiUtils.success(result);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) { // TODO create adequate Exception Handler
             log.info("Wrong Category Id : {}", categoryId);
             return ApiUtils.error("Wrong Category Id", HttpStatus.BAD_REQUEST);
         }

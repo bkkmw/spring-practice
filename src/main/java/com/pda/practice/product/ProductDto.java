@@ -7,6 +7,7 @@ public class ProductDto {
 //    @NoArgsConstructor
     @Getter
     @Setter
+    // TODO Validate request body
     public static class RegisterReq {
         private String name;
         private String desc;

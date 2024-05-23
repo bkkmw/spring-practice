@@ -18,6 +18,7 @@ public class ProductService {
 
     public int register(ProductDto.RegisterReq registerReq) {
         log.debug("received with name : {}", registerReq.getName());
+        // TODO DTO to Entity - toEntity
         Product product = Product.builder()
                 .name(registerReq.getName())
                 .description(registerReq.getDesc())
@@ -36,6 +37,7 @@ public class ProductService {
         log.debug("received product id : {}", productId);
         Product product = productRepository.findById(productId).orElseThrow(NoSuchElementException::new);
 
+        // TODO Entity to DTO
         return ProductDto.Info.builder()
                 .id(product.getId())
                 .categoryId(product.getCategoryId())
@@ -46,12 +48,13 @@ public class ProductService {
                 .build();
     }
 
+    // TODO Paging
     public List<ProductDto.Info> getProducts(int categoryId, int pageNo, int size) {
         log.debug("received categoryId : {}", categoryId);
         List<Product> products;
         if(categoryId == 0) {
             products = productRepository.findAll();
-        } else if(categoryId < 10) {
+        } else if(categoryId < 10) { // TODO check valid category id
             products = productRepository.findAllByCategoryId(categoryId).orElseThrow(NoSuchElementException::new);
         } else {
             throw new IllegalArgumentException();
@@ -69,6 +72,7 @@ public class ProductService {
             }).collect(Collectors.toList());
     }
 
+    // TODO method always returns true if no exception occurs, check whether entity modified or not
     public boolean modifyProduct(int productId, ProductDto.ModifyReq modifyReq) {
         log.debug("received product id : {}", productId);
 
@@ -79,6 +83,7 @@ public class ProductService {
         return true;
     }
 
+    // TODO method always returns true
     public boolean deleteProduct(int productId) {
         productRepository.deleteById(productId);
 
