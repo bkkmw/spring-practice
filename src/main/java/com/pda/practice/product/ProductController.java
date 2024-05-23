@@ -4,8 +4,6 @@ import com.pda.practice.exception.ValidatorException;
 import com.pda.practice.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +20,7 @@ public class ProductController {
 
     @PostMapping(value = "")
     public ResponseEntity<Map<String, Object>> register(
-            @RequestBody Product.RegisterReq registerReq)
+            @RequestBody ProductDto.RegisterReq registerReq)
     {
         HttpStatus status;
         Map<String, Object> result = new HashMap<>();
@@ -70,7 +68,7 @@ public class ProductController {
             if (!ValidationUtil.isValidNumber(productId)) {
                 throw new ValidatorException("productId", "Invalid productId. Was : " + productId);
             }
-            Product productInfo = productService.getProductInfo(productId);
+            ProductDto.Info productInfo = productService.getProductInfo(productId);
 
             status = HttpStatus.OK;
             result.put("product", productInfo);
@@ -99,7 +97,7 @@ public class ProductController {
 
         log.info("Received query parameter : category {}, pageNo {}, size {}", categoryId, pageNo, size);
         try {
-            List<Product> products = productService.getProducts(categoryId, pageNo, size);
+            List<ProductDto.Info> products = productService.getProducts(categoryId, pageNo, size);
 
             if (products == null || products.isEmpty()) {
                 status = HttpStatus.NO_CONTENT;
@@ -120,7 +118,7 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Map<String, Object>> modifyProduct(@PathVariable int productId, @RequestBody Product.ModifyReq modifyReq) {
+    public ResponseEntity<Map<String, Object>> modifyProduct(@PathVariable int productId, @RequestBody ProductDto.ModifyReq modifyReq) {
         HttpStatus status;
         Map<String, Object> result = new HashMap<>();
         log.info("Received productId : {}", productId);
