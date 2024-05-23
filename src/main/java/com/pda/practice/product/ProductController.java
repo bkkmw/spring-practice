@@ -1,7 +1,5 @@
 package com.pda.practice.product;
 
-import com.pda.practice.exception.ValidatorException;
-import com.pda.practice.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,29 +25,10 @@ public class ProductController {
 
         log.debug("request received with name : {}", registerReq.getSummary());
         try {
-            // validate request body
-            // TODO: Extract method
-            if(ValidationUtil.isEmptyString(registerReq.getName()))
-                throw new ValidatorException("name", "name cannot be empty");
-            if(!ValidationUtil.isAlpha(registerReq.getName()))
-                throw new ValidatorException("name", "name must be in english. Was : " + registerReq.getName());
-            if(!ValidationUtil.isValidNumber(registerReq.getCategoryId()))
-                throw new ValidatorException("categoryId", "Invalid category number. Was : " + registerReq.getCategoryId());
-            if(!ValidationUtil.isValidNumber(registerReq.getPrice()))
-                throw new ValidatorException("price", "Invalid price. Was : " + registerReq.getPrice());
-            if(ValidationUtil.isEmptyString(registerReq.getDesc()))
-                throw new ValidatorException("desc", "desc cannot be empty");
-            if(!ValidationUtil.isStringInLength(registerReq.getDesc(), 20))
-                throw new ValidatorException("desc", "desc cannot be longer than 20. Length was : " + registerReq.getDesc().length());
-
-
             int id = productService.register(registerReq);
             status = HttpStatus.CREATED;
             result.put("message", "Created");
             result.put("id", id);
-        } catch (ValidatorException e) {
-            status = HttpStatus.BAD_REQUEST;
-            result.put("errors", e.getValidationErrors());
         } catch (Exception e) {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             result.put("message", e.getMessage());
@@ -65,16 +44,11 @@ public class ProductController {
 
         log.info("Received path variable : {} ({})", productId, productId);
         try {
-            if (!ValidationUtil.isValidNumber(productId)) {
-                throw new ValidatorException("productId", "Invalid productId. Was : " + productId);
-            }
+
             ProductDto.Info productInfo = productService.getProductInfo(productId);
 
             status = HttpStatus.OK;
             result.put("product", productInfo);
-        } catch (ValidatorException e) {
-            status = HttpStatus.BAD_REQUEST;
-            result.put("errors", e.getValidationErrors());
         } catch (NoSuchElementException e) {
             status = HttpStatus.NOT_FOUND;
 
