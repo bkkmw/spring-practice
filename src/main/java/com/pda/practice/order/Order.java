@@ -1,7 +1,8 @@
 package com.pda.practice.order;
 
+import com.pda.practice.entity.Product;
 import com.pda.practice.entity.User;
-import com.pda.practice.product.Product;
+import com.pda.practice.product.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

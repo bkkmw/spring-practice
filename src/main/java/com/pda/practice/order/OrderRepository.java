@@ -1,6 +1,5 @@
 package com.pda.practice.order;
 
-import com.pda.practice.product.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
