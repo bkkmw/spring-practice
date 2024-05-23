@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 @Slf4j
@@ -34,6 +35,16 @@ public class GlobalExceptionHandler {
         log.info("Duplicated DB column");
 
         return ApiUtils.error(message, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = NoSuchElementException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiUtils.ApiResult<Object> handleNoSuchElementException(NoSuchElementException e) {
+        String message = e.getMessage();
+
+        log.info("Element Not Found");
+
+        return ApiUtils.error(message, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = Exception.class)
